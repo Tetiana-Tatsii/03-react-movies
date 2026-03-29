@@ -1,6 +1,13 @@
-// src/services/movieService.ts
 import axios from "axios";
-import type { TMDBResponse } from "../types/movie";
+import { type Movie } from "../types/movie"; // Імпортуємо тільки Movie!
+
+// Ось наш інтерфейс, який ми перенесли сюди:
+export interface TMDBResponse {
+  page: number;
+  results: Movie[];
+  total_pages: number;
+  total_results: number;
+}
 
 const ACCESS_TOKEN = import.meta.env.VITE_TMDB_TOKEN;
 

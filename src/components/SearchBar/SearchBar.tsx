@@ -1,4 +1,4 @@
-import { type FormEvent } from "react";
+import { useRef } from "react";
 import toast from "react-hot-toast";
 import css from "./SearchBar.module.css";
 
@@ -7,21 +7,23 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ onSubmit }: SearchBarProps) => {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // Створюємо ref, щоб мати доступ до форми для її очищення
+  const formRef = useRef<HTMLFormElement>(null);
 
-    const form = e.currentTarget;
-    const query = (
-      form.elements.namedItem("query") as HTMLInputElement
-    ).value.trim();
+  // Функція тепер приймає FormData, а не FormEvent
+  const handleSubmit = (formData: FormData) => {
+    // Дістаємо значення інпуту за його name ("query")
+    const query = formData.get("query")?.toString().trim() || "";
 
+    // Перевіряємо на порожній рядок
     if (query === "") {
       toast.error("Please enter your search query.");
       return;
     }
 
+    // Передаємо запит наверх і очищаємо форму через ref
     onSubmit(query);
-    form.reset();
+    formRef.current?.reset();
   };
 
   return (
@@ -35,7 +37,8 @@ const SearchBar = ({ onSubmit }: SearchBarProps) => {
         >
           Powered by TMDB
         </a>
-        <form className={css.form} onSubmit={handleSubmit}>
+        {/* Замість onSubmit використовуємо сучасний атрибут action */}
+        <form ref={formRef} className={css.form} action={handleSubmit}>
           <input
             className={css.input}
             type="text"
