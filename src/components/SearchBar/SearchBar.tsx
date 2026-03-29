@@ -6,24 +6,20 @@ interface SearchBarProps {
   onSubmit: (query: string) => void;
 }
 
-// Тепер ми просто вказуємо тип пропсів ось так, без React.FC:
 const SearchBar = ({ onSubmit }: SearchBarProps) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Дістаємо значення з інпуту
     const form = e.currentTarget;
     const query = (
       form.elements.namedItem("query") as HTMLInputElement
     ).value.trim();
 
-    // Перевіряємо, чи не порожній рядок
     if (query === "") {
       toast.error("Please enter your search query.");
       return;
     }
 
-    // Передаємо слово в головний компонент і очищаємо форму
     onSubmit(query);
     form.reset();
   };
